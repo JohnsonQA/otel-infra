@@ -1,0 +1,2 @@
+project = "otel"
+environment = "dev"
