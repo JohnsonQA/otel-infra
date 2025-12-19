@@ -1,2 +1,0 @@
-project = "otel"
-environment = "dev"

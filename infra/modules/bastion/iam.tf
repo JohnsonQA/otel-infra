@@ -1,0 +1,30 @@
+resource "aws_iam_role" "bastion_role" {
+    name = "${var.project}-${var.environment}-bastion-role"
+    
+    #Assume_role_policy is required to specify which entities can assume this role
+    assume_role_policy = jsonencode({
+        Version = "2012-10-17"
+        Statement = [{
+            Effect = "Allow"
+            Action = "sts:AssumeRole"
+            Principal = {
+                Service = "ec2.amazonaws.com"
+            }
+        }]
+    })
+}
+
+#why ssm policy over ssh? Because ssm provides better security and management features compared to traditional ssh access.
+#Main Advantage of SSM over SSH is that it eliminates the need to open inbound ports, manage SSH keys, or use bastion hosts.
+#SSM provides temprorary credential access, reducing the risk of compromised keys.
+resource "aws_iam_role_policy_attachment" "ssm" {
+    role = aws_iam_role.bastion_role.name
+    policy_arn = "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"
+}
+
+#What is iam instance profile? An IAM instance profile is a container for an IAM role that you can use to pass role information to an EC2 instance when the instance starts.
+#Why this instead IAM role directly? Because EC2 instances cannot directly assume IAM roles. Instead, they assume the roles through instance profiles.
+resource "aws_iam_instance_profile" "bastion" {
+    name = "${var.project}-${var.environment}-bastion-instance-profile"
+    role = aws_iam_role.bastion_role.name
+}
