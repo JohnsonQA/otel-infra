@@ -8,11 +8,6 @@ variable "environment" {
     type = string
 }
 
-variable "vpc_id" {
-    description = "VPC ID"
-    type = string
-}
-
 variable "subnet_id" {
     description = "subnet id for bastion host"
     type = string

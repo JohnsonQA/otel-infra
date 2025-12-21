@@ -1,5 +1,4 @@
 data "aws_ami" "ubuntu" {
-    count = var.ami_id != "" ? 1 : 0
     most_recent = true
     owners = ["099720109477"]
 

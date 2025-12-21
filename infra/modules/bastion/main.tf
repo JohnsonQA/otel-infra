@@ -6,7 +6,7 @@ resource "aws_instance" "bastion" {
     vpc_security_group_ids = [var.bastion_sg_id]
     key_name = aws_key_pair.bastion_keypair.key_name
 
-    iam_instance_profile = aws_iam_instance_profile.bastion_profile.name
+    iam_instance_profile = aws_iam_instance_profile.bastion.name
     associate_public_ip_address = true
 
     root_block_device {
