@@ -24,8 +24,6 @@ module "bastion" {
 
     project = var.project
     environment = var.environment
-
-    vpc_id = module.vpc.vpc_id
     subnet_id = module.vpc.public_subnet_ids[0]
     bastion_sg_id = module.sg.bastion_sg_id
     instance_type = var.instance_type
