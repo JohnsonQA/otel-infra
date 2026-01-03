@@ -20,6 +20,7 @@ resource "aws_security_group" "eks_control_plane" {
     )
 }
 
+/* #This is only for self managed nodes. Usually aws managed node groups automatically have these rules 
 resource "aws_security_group" "eks_nodes" {
     name = "${var.project}-${var.environment}-eks-nodes-sg"
     description = "EKS worker nodes security group"
@@ -68,3 +69,4 @@ resource "aws_security_group" "eks_nodes" {
     )
 }
 
+ */

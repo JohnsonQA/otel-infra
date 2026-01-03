@@ -21,7 +21,7 @@ variable "allowed_ssh_cidrs"{
 
 #VPC CIDR to allow internal traffic within VPC
 variable "vpc_cidr" {
-    description = "VPC internal traffic"
+    description = "VPC CIDR used for internal only SG rules (node-node, control plane-node and future pod-pod communication)"
     type = string
 }
 

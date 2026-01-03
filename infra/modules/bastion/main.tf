@@ -7,7 +7,7 @@ resource "aws_instance" "bastion" {
     key_name = aws_key_pair.bastion_keypair.key_name
 
     iam_instance_profile = aws_iam_instance_profile.bastion.name
-    associate_public_ip_address = true
+    associate_public_ip_address = true #Bastion needs public IP to allow access from internet
 
     root_block_device {
         volume_size = var.root_volume_size

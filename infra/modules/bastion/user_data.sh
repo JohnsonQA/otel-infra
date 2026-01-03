@@ -1,5 +1,5 @@
 #!/bin/bash
-set -e
+set -e # Exit immediately if a command exits with a non-zero status
 
 apt update -y
 apt install -y curl unzip git jq docker.io cloud-guest-utils

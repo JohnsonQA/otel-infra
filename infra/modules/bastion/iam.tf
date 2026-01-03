@@ -5,8 +5,8 @@ resource "aws_iam_role" "bastion_role" {
     assume_role_policy = jsonencode({
         Version = "2012-10-17"
         Statement = [{
-            Effect = "Allow"
-            Action = "sts:AssumeRole"
+            Effect = "Allow" #allow means the action is permitted
+            Action = "sts:AssumeRole" #Action means the specific operation that is allowed
             Principal = {
                 Service = "ec2.amazonaws.com"
             }

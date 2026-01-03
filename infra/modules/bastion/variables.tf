@@ -8,14 +8,10 @@ variable "environment" {
     type = string
 }
 
-variable "subnet_id" {
-    description = "subnet id for bastion host"
+variable "ami_id" {
+    description = "AMI ID for bastion host"
     type = string
-}
-
-variable "bastion_sg_id" {
-    description = "SG for bastion host"
-    type = string
+    default = ""
 }
 
 variable "instance_type" {
@@ -24,10 +20,14 @@ variable "instance_type" {
     default = "t3.micro"
 }
 
-variable "ami_id" {
-    description = "AMI ID for bastion host"
+variable "subnet_id" {
+    description = "subnet id for bastion host"
     type = string
-    default = ""
+}
+
+variable "bastion_sg_id" {
+    description = "SG for bastion host"
+    type = string
 }
 
 variable "ssh_public_key_path" {
