@@ -14,7 +14,7 @@ unzip awscliv2.zip
 ./aws/install
 
 # Terraform
-curl -fsSL https://releases.hashicorp.com/terraform/1.6.6/terraform_1.6.6_linux_amd64.zip -o terraform.zip
+curl -fsSL https://releases.hashicorp.com/terraform/1.14.3/terraform_1.14.3_linux_amd64.zip -o terraform.zip
 unzip terraform.zip
 mv terraform /usr/local/bin/
 
