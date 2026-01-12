@@ -9,3 +9,7 @@ output "bastion_public_ip" {
 output "bastion_keypair_name" {
     value = aws_instance.bastion.key_name
 }
+
+output "bastion_role_arn" {
+    value = aws_iam_role.bastion_role.arn
+}

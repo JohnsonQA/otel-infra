@@ -6,6 +6,11 @@ variable "environment" {
   type = string
 }
 
+variable "region" {
+  type = string
+  default = "us-east-1"
+}
+
 variable "vpc_cidr" {
   type    = string
   default = "10.0.0.0/16"
@@ -50,4 +55,10 @@ variable "node_groups" {
       min_size     = number
     })
   }))
+}
+
+variable "alb_controller_enabled" {
+  description = "Enable AWS Load Balancer Controller addon"
+  type        = bool
+  default     = true
 }

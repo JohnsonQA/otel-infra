@@ -19,10 +19,26 @@ resource "aws_eks_cluster" "main" {
         "scheduler" #Scheduler logs help in tracking the scheduling decisions made by the Kubernetes scheduler, which assigns pods to nodes based on resource availability and other constraints.
     ]
 
+    # EKS Access Configuration is set to use both API and Config Map for authentication.
+    access_config {
+        authentication_mode = "API_AND_CONFIG_MAP"
+    }
+
     #why depends on here? To ensure that the IAM role policies are attached before creating the EKS cluster, preventing potential permission issues during cluster creation.
     depends_on = [
         aws_iam_role_policy_attachment.eks_cluster_policy
     ]
 
     tags = var.tags
+}
+
+#why this? To create an OIDC provider for the EKS cluster, enabling integration with Kubernetes service accounts for IAM roles.
+resource "aws_iam_openid_connect_provider" "eks" {
+    url = aws_eks_cluster.main.identity[0].oidc[0].issuer #why this? It sets the OIDC provider URL to the issuer URL of the EKS cluster, enabling integration with Kubernetes service accounts for IAM roles. Means? 
+    #It allows the EKS cluster to use OIDC for authentication, facilitating secure access to AWS resources from within the cluster.
+
+    client_id_list = ["sts:amazonaws.com"] #It specifies the allowed client IDs that can use this OIDC provider, in this case, the AWS STS service. means? It allows the EKS cluster to authenticate with AWS services using web identity tokens.
+
+    thumbprint_list = [data.tls_certificate.oidc.certificates[0].sha1_fingerprint] #why this? To ensure secure communication with the OIDC provider by validating its SSL/TLS certificate using the provided thumbprint. means? 
+    #It ensures that the OIDC provider is legitimate and prevents man-in-the-middle attacks.
 }

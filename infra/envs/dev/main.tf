@@ -48,3 +48,61 @@ module "eks" {
     Project     = var.project
   }
 }
+
+module "eks_access" {
+  source = "../../modules/eks-access"
+
+  cluster_name = module.eks.cluster_name
+  principal_arn = module.bastion.bastion_role_arn
+
+  policy_arn = "arn:aws:eks::aws:cluster-access-policy/AmazonEKSClusterAdminPolicy"
+}
+
+module "ebs_csi_iam" {
+  source = "../../modules/iam/ebs-csi"
+
+  cluster_name      = module.eks.cluster_name
+  oidc_provider_arn = module.eks.oidc_provider_arn #These were added to pass the OIDC provider details from the EKS module to the IAM module.
+  oidc_provider_url = module.eks.oidc_provider_url 
+}
+
+module "alb_controller_iam" {
+  source = "../../modules/iam/alb-controller"
+
+  cluster_name      = module.eks.cluster_name
+  oidc_provider_arn = module.eks.oidc_provider_arn
+  oidc_provider_url = module.eks.oidc_provider_url
+}
+
+module "alb_controller_sa" {
+  source = "../../modules/kubernetes/alb-controller-sa"
+
+  iam_role_arn = module.alb_controller_iam.iam_role_arn
+
+  tags = {
+    Environment = var.environment
+    Project     = var.project
+    Component = "alb-controller"
+  }
+}
+
+module "eks_addons" {
+  source = "../../modules/eks-addons"
+  cluster_name = module.eks.cluster_name
+  region = var.region
+
+  alb_controller_enabled = var.alb_controller_enabled
+  ebs_csi_role_arn = module.ebs_csi_iam.role_arn
+
+  depends_on = [
+    module.alb_controller_sa
+  ]
+}
+
+module "storage_class" {
+  source = "../../modules/storage/storage-class"
+
+  cluster_name = module.eks.cluster_name
+
+  depends_on = [module.eks_addons]
+}

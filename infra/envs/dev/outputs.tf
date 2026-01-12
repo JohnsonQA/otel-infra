@@ -13,3 +13,7 @@ output "eks_cluster_name" {
 output "eks_cluster_endpoint" {
   value = module.eks.cluster_endpoint
 }
+
+output "alb_controller_iam_role_arn" {
+  value = module.alb_controller_iam.iam_role_arn
+}

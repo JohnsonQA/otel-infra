@@ -22,6 +22,31 @@ resource "aws_iam_role_policy_attachment" "ssm" {
     policy_arn = "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"
 }
 
+#Custom policy to allow bastion to read eks cluster info
+resource "aws_iam_policy" "bastion_eks_read" {
+  name = "otel-dev-bastion-eks-read"
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Effect = "Allow"
+        Action = [
+          "eks:DescribeCluster",
+          "eks:ListClusters"
+        ]
+        Resource = "*"
+      }
+    ]
+  })
+}
+
+#Attching the custom policy to bastion role
+resource "aws_iam_role_policy_attachment" "bastion_eks_read_attach" {
+  role       = aws_iam_role.bastion_role.name
+  policy_arn = aws_iam_policy.bastion_eks_read.arn
+}
+
 #What is iam instance profile? An IAM instance profile is a container for an IAM role that you can use to pass role information to an EC2 instance when the instance starts.
 #Why this instead IAM role directly? Because EC2 instances cannot directly assume IAM roles. Instead, they assume the roles through instance profiles.
 resource "aws_iam_instance_profile" "bastion" {
