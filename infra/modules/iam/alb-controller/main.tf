@@ -14,7 +14,10 @@ resource "aws_iam_role" "alb-controller" {
             Condition = {
                 StringEquals = {
                     "${replace(var.oidc_provider_url, "https://", "")}:sub" = "system:serviceaccount:kube-system:aws-load-balancer-controller"
+
+                    "${replace(var.oidc_provider_url, "https://", "")}:aud" = "sts.amazonaws.com" #This condition ensures that the audience claim in the token matches "sts.amazonaws.com", which is required for AWS STS to validate the token.
                 }
+
             }   
         }]
     })

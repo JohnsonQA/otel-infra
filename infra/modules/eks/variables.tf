@@ -15,10 +15,6 @@ variable "eks_cluster_sg_id" {
     type = string
 }
 
-variable "bastion_sg_id" {
-    type = string
-}
-
 
 #what is map(object) here? It is a complex type that allows us to define a map where each value is an object with specific attributes.
 #why we use map here? Because we want to define multiple node groups, each with its own configuration.

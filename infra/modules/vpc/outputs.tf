@@ -12,3 +12,8 @@ output "private_subnet_ids" {
     description = "Private Subnet IDs"
     value = aws_subnet.private[*].id 
 }
+
+output "availability_zones" {
+    description = "Availability Zones used in the VPC"
+    value = local.az_names
+}

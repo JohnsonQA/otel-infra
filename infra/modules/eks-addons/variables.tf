@@ -13,6 +13,11 @@ variable "region" {
     type = string
 }
 
+variable "vpc_id" {
+    description = "The ID of the VPC where the EKS cluster is deployed"
+    type        = string
+}
+
 variable "alb_controller_enabled" {
     description = "Flag to enable or disable the ALB Ingress Controller addon"
     type        = bool

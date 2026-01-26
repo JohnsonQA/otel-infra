@@ -36,7 +36,8 @@ resource "aws_subnet" "public" {
     tags = merge(
         local.common_tags,
         {
-            Name = "${var.project}-${var.environment}-public-${count.index + 1}"
+            Name = "${var.project}-${var.environment}-public-${count.index + 1}" #why count.index + 1? -> Because count.index starts from 0, adding 1 makes the naming more human-friendly starting from 1.
+            "kubernetes.io/role/elb" = "1" #why this tag? -> This tag is used by Kubernetes to identify subnets that can be used for load balancers (ELB). It helps Kubernetes manage and provision load balancers in the appropriate subnets.
         }
     )
 }
@@ -52,6 +53,7 @@ resource "aws_subnet" "private" {
         local.common_tags,
         {
             Name = "${var.project}-${var.environment}-private-${count.index+1}"
+            "kubernetes.io/role/internal-elb" = "1" #why this tag? -> This tag is used by Kubernetes to identify subnets that can be used for internal load balancers. It helps Kubernetes manage and provision internal load balancers in the appropriate subnets.
         }
     )
 }

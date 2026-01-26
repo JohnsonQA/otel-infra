@@ -1,11 +1,11 @@
 resource "aws_eks_cluster" "main" {
     name = var.cluster_name
-    version = var.kubernetes_version
-    role_arn = aws_iam_role.eks_cluster_role.arn
+    version = var.kubernetes_version # why this? To specify the Kubernetes version for the EKS cluster, ensuring compatibility with desired features and configurations.
+    role_arn = aws_iam_role.eks_cluster_role.arn #If we have this means? This IAM role allows the EKS cluster to interact with other AWS services on behalf of the cluster.
 
     vpc_config {
         subnet_ids = var.private_subnet_ids
-        security_group_ids = [var.eks_cluster_sg_id]
+        security_group_ids = [var.eks_cluster_sg_id] #why this? To associate the specified security group with the EKS cluster, controlling network access to the cluster's control plane.
         endpoint_private_access = true #why this? To ensure that the EKS cluster API endpoint is only accessible from within the VPC for enhanced security.
         endpoint_public_access = false #why this? To prevent public access to the EKS cluster API endpoint, reducing exposure to potential threats.
     }
@@ -20,6 +20,9 @@ resource "aws_eks_cluster" "main" {
     ]
 
     # EKS Access Configuration is set to use both API and Config Map for authentication.
+    #means that both the Kubernetes API and Config Map will be used for user authentication.
+    # what is this access_config for? -> This configuration enhances security by allowing multiple methods of authentication, providing flexibility in how users and services access the EKS cluster.
+    #Example with any aws service accessing eks cluster -> An application running on an EC2 instance can use IAM roles (API) to authenticate with the EKS cluster, while developers can use kubeconfig files (Config Map) for their access.
     access_config {
         authentication_mode = "API_AND_CONFIG_MAP"
     }
@@ -41,4 +44,6 @@ resource "aws_iam_openid_connect_provider" "eks" {
 
     thumbprint_list = [data.tls_certificate.oidc.certificates[0].sha1_fingerprint] #why this? To ensure secure communication with the OIDC provider by validating its SSL/TLS certificate using the provided thumbprint. means? 
     #It ensures that the OIDC provider is legitimate and prevents man-in-the-middle attacks.
+
+    depends_on = [aws_eks_cluster.main]
 }

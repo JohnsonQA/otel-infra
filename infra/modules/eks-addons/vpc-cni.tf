@@ -1,3 +1,5 @@
+#VPC-CNI add on is used to provide networking capabilities for Kubernetes pods in an EKS cluster.
+#with this add on pods can receive IP addresses from the VPC, allowing them to communicate with other resources in the VPC and on the internet.
 resource "aws_eks_addon" "vpc_cni" {
     cluster_name = var.cluster_name
     addon_name = "vpc-cni"

@@ -15,38 +15,15 @@ resource "aws_iam_role" "ebs_csi" {
             Condition = {
                 StringEquals = {
                     "${replace(var.oidc_provider_url, "https://", "")}:sub" = "system:serviceaccount:kube-system:ebs-csi-controller-sa"
+
+                    "${replace(var.oidc_provider_url, "https://", "")}:aud" = "sts.amazonaws.com" #This condition ensures that the audience claim in the token matches "sts.amazonaws.com", which is required for AWS STS to validate the token.
                 }
             }
         }]
     })
 }
 
-
-resource "aws_iam_policy"  "ebs_csi_policy" {
-    name = "${var.cluster_name}-ebs-csi-policy"
-    description = "IAM policy for EBS CSI Driver to manage EBS volumes"
-
-    policy = jsonencode ({
-        Version = "2012-10-17"
-        Statement = [{
-            Effect = "Allow"
-            Action = [
-                "ec2:CreateVolume",
-                "ec2:DeleteVolume",
-                "ec2:AttachVolume",
-                "ec2:DetachVolume",
-                "ec2:DescribeVolumes",
-                "ec2:DescribeInstances",
-                "ec2:CreateTags",
-                "ec2:DeleteTags"
-            ]
-            Resource = "*" #It means the policy allows the specified actions on all resources. what resources? All EC2 volumes and instances in the AWS account.
-        }]
-    })
-}
-
-
 resource "aws_iam_role_policy_attachment" "ebs_csi_attach" {
     role       = aws_iam_role.ebs_csi.name
-    policy_arn = aws_iam_policy.ebs_csi_policy.arn
+    policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonEBSCSIDriverPolicy" #why this policy? This policy grants the necessary permissions for the EBS CSI driver to manage EBS volumes on behalf of the Kubernetes cluster.
 }

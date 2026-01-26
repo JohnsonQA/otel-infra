@@ -1,3 +1,4 @@
+#This iam role is for the EKS cluster itself. It allows the cluster to interact with other AWS services on behalf of the cluster.
 resource "aws_iam_role" "eks_cluster_role" {
     name = "${var.cluster_name}-eks-cluster-role"
     
@@ -19,6 +20,7 @@ resource "aws_iam_role_policy_attachment" "eks_cluster_policy" {
     policy_arn = "arn:aws:iam::aws:policy/AmazonEKSClusterPolicy"
 }
 
+#This iam role is for the EKS worker nodes (node groups). It allows the worker nodes to interact with other AWS services on behalf of the nodes.
 resource "aws_iam_role" "eks_node_group_role" {
    name = "${var.cluster_name}-node-role"
 

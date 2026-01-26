@@ -39,8 +39,7 @@ module "eks" {
 
   private_subnet_ids = module.vpc.private_subnet_ids
   eks_cluster_sg_id  = module.sg.eks_control_plane_sg_id
-  bastion_sg_id      = module.sg.bastion_sg_id
-
+  
   node_groups = var.node_groups
 
   tags = {
@@ -90,7 +89,8 @@ module "eks_addons" {
   source = "../../modules/eks-addons"
   cluster_name = module.eks.cluster_name
   region = var.region
-
+  vpc_id = module.vpc.vpc_id
+  
   alb_controller_enabled = var.alb_controller_enabled
   ebs_csi_role_arn = module.ebs_csi_iam.role_arn
 

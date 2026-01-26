@@ -1,16 +1,14 @@
+ # EKS control plane is AWS-managed.
+  # No custom ingress rules are required here.
+  # Worker nodes and kubectl access are handled by AWS-managed SGs,
+  # IAM authentication, and Kubernetes RBAC.
+  # There is no ingress needed from outside to the control plane SG because it is managed by AWS.
+  # Egress rules are needed to allow the control plane to communicate with worker nodes.
 resource "aws_security_group" "eks_control_plane" {
     name = "${var.project}-${var.environment}-eks-controlplane-sg"
     description = "EKS Control Plane Security Group"
     vpc_id = var.vpc_id
 
-    #Required for private endpoint communication with worker nodes
-    ingress {
-        description = "Allow communication from worker nodes"
-        from_port = 443
-        to_port = 443
-        protocol = "tcp"
-        security_groups = [aws_security_group.bastion.id]
-    }
 
     #Only egress rules needed to communicate with worker nodes. Ingress only managed by worker nodes
     egress {
